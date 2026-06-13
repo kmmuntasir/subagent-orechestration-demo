@@ -1,4 +1,5 @@
 ---
+name: controller-builder
 description: "Generates the Controller and routes file from routes.yaml + dtos.yaml."
 model: claude-sonnet-4-6
 ---

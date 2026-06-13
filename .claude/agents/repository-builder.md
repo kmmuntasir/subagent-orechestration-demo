@@ -1,4 +1,5 @@
 ---
+name: repository-builder
 description: "Generates the Repository interface and implementation from schema.yaml + operations.yaml."
 model: claude-sonnet-4-6
 ---

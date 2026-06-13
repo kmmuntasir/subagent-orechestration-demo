@@ -1,4 +1,5 @@
 ---
+name: model-builder
 description: "Generates an Eloquent Model from schema.yaml."
 model: claude-sonnet-4-6
 ---

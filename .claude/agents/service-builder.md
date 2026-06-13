@@ -1,4 +1,5 @@
 ---
+name: service-builder
 description: "Generates the Service interface and implementation from operations.yaml + dtos.yaml."
 model: claude-sonnet-4-6
 ---

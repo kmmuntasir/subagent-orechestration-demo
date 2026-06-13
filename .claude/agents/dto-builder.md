@@ -1,4 +1,5 @@
 ---
+name: dto-builder
 description: "Generates all DTO classes from dtos.yaml."
 model: claude-sonnet-4-6
 ---
