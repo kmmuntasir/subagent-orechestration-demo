@@ -1,0 +1,42 @@
+# Format reference for output/specs/dtos.yaml
+# DTO field definitions. Drives DTOs. Also read by service-builder and
+# controller-builder (for constructor shapes and class names).
+dtos:
+  base:
+    class: ProductDTO
+    fields:
+      - { name: id, type: int, nullable: false }
+      - { name: name, type: string, nullable: false }
+      - { name: description, type: ?string, nullable: true }
+      - { name: price, type: float, nullable: false }
+      - { name: stock, type: int, nullable: false }
+      - { name: categoryId, type: ?int, nullable: true }
+      - { name: createdAt, type: ?string, nullable: true }
+  create:
+    class: CreateProductDTO
+    constructor_params:
+      - { name: name, type: string }
+      - { name: description, type: ?string }
+      - { name: price, type: float }
+      - { name: stock, type: int }
+      - { name: categoryId, type: ?int }
+  update:
+    class: UpdateProductDTO
+    constructor_params:
+      - { name: name, type: ?string, default: null }
+      - { name: description, type: ?string, default: null }
+      - { name: price, type: ?float, default: null }
+      - { name: stock, type: ?int, default: null }
+      - { name: categoryId, type: ?int, default: null }
+  response:
+    class: ProductResponseDTO
+    fields:
+      - { name: id, type: int }
+      - { name: name, type: string }
+      - { name: description, type: ?string }
+      - { name: price, type: float }
+      - { name: stock, type: int }
+      - { name: categoryId, type: ?int }
+      - { name: createdAt, type: ?string }
+      - { name: category, type: ?array }
+    includes_relationship: category

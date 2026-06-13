@@ -1,0 +1,66 @@
+# Format reference for output/specs/operations.yaml
+# CRUD operations + repository/service method contracts.
+# Drives Repository and Service.
+repository:
+  class: ProductRepository
+  interface: ProductRepositoryInterface
+  model: Product
+  methods:
+    - name: list
+      params:
+        - { name: filters, type: array, default: "[]" }
+      return: "Collection<int, Product>"
+    - name: findById
+      params:
+        - { name: id, type: int }
+      return: "?Product"
+    - name: create
+      params:
+        - { name: data, type: array }
+      return: Product
+    - name: update
+      params:
+        - { name: id, type: int }
+        - { name: data, type: array }
+      return: Product
+    - name: delete
+      params:
+        - { name: id, type: int }
+      return: bool
+
+service:
+  class: ProductService
+  interface: ProductServiceInterface
+  depends_on: ProductRepositoryInterface
+  methods:
+    - name: listProducts
+      params:
+        - { name: filters, type: array, default: "[]" }
+      return: "array"          # array of ProductResponseDTO
+      return_element: ProductResponseDTO
+    - name: getProduct
+      params:
+        - { name: id, type: int }
+      return: ProductResponseDTO
+      throws: ModelNotFoundException
+    - name: createProduct
+      params:
+        - { name: dto, type: CreateProductDTO }
+      return: ProductResponseDTO
+    - name: updateProduct
+      params:
+        - { name: id, type: int }
+        - { name: dto, type: UpdateProductDTO }
+      return: ProductResponseDTO
+      throws: ModelNotFoundException
+    - name: deleteProduct
+      params:
+        - { name: id, type: int }
+      return: void
+      throws: ModelNotFoundException
+
+list_filters:
+  - { name: search, type: string, columns: [name, description] }
+  - { name: category_id, type: integer, columns: [category_id] }
+list_includes: [category]
+list_order_by: created_at DESC

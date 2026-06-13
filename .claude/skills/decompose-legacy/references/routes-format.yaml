@@ -1,0 +1,60 @@
+# Format reference for output/specs/routes.yaml
+# HTTP endpoints + validation. Drives Controller and Routes.
+resource: products
+prefix: api
+controller: ProductController
+depends_on: ProductServiceInterface
+endpoints:
+  - method: GET
+    path: /api/products
+    controller_method: index
+    service_method: listProducts
+    description: List products with optional filters
+    query_params:
+      - { name: search, rule: "nullable|string" }
+      - { name: category_id, rule: "nullable|integer|exists:categories,id" }
+  - method: GET
+    path: /api/products/{id}
+    controller_method: show
+    service_method: getProduct
+    path_params:
+      - { name: id, type: int }
+    description: Show a single product
+    error_404: true
+  - method: POST
+    path: /api/products
+    controller_method: store
+    service_method: createProduct
+    description: Create a new product
+    status_success: 201
+    body_validation:
+      - { name: name, rule: "required|string|max:255" }
+      - { name: description, rule: "nullable|string" }
+      - { name: price, rule: "required|numeric|min:0" }
+      - { name: stock, rule: "required|integer|min:0" }
+      - { name: category_id, rule: "nullable|integer|exists:categories,id" }
+    dto: CreateProductDTO
+  - method: PUT
+    path: /api/products/{id}
+    controller_method: update
+    service_method: updateProduct
+    path_params:
+      - { name: id, type: int }
+    description: Update an existing product
+    body_validation:
+      - { name: name, rule: "sometimes|string|max:255" }
+      - { name: description, rule: "nullable|string" }
+      - { name: price, rule: "sometimes|numeric|min:0" }
+      - { name: stock, rule: "sometimes|integer|min:0" }
+      - { name: category_id, rule: "nullable|integer|exists:categories,id" }
+    dto: UpdateProductDTO
+    error_404: true
+  - method: DELETE
+    path: /api/products/{id}
+    controller_method: destroy
+    service_method: deleteProduct
+    path_params:
+      - { name: id, type: int }
+    description: Delete a product
+    status_success: 204
+    error_404: true
