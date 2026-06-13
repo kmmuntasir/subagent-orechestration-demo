@@ -2,19 +2,19 @@
 
 ## General
 
-PHP 8.4 application built on Laravel 11+. The target architecture is a strict layered API (Model → DTO → Repository → Service → Controller → Route). Follow the Laravel docs and PHP FIG standards (PSR-4, PSR-12) as primary references. `declare(strict_types=1);` is mandatory in every PHP file.
+PHP 8.4 app on Laravel 11+. Target = strict layered API (Model → DTO → Repository → Service → Controller → Route). Follow Laravel docs + PHP FIG standards (PSR-4, PSR-12) as primary refs. `declare(strict_types=1);` mandatory every PHP file.
 
-This project modernizes legacy procedural CRUD (see `legacy/`) into a clean, framework-grade API (see `modern/`). Never mix the two layers.
+Project modernizes legacy procedural CRUD (see `legacy/`) into clean framework-grade API (see `modern/`). Never mix layers.
 
 ## Documentation & Syntax Lookup
 
-When unsure about syntax, a method signature, a framework API, or any PHP/Laravel/Pest detail, **use the Context7 MCP server** to fetch authoritative, up-to-date docs before guessing. Context7 serves the latest documentation for languages, frameworks, and tech stacks and is the preferred source over training-data recall.
+Unsure about syntax, method signature, framework API, any PHP/Laravel/Pest detail? **Use Context7 MCP server** to fetch authoritative up-to-date docs before guessing. Context7 serves latest docs for languages, frameworks, tech stacks — preferred over training-data recall.
 
-Resolve the library first (e.g., `laravel`, `pestphp`, `php`), then query the specific symbol or behavior. Prefer it whenever you need:
-- Exact method signatures, return types, or parameter names
+Resolve library first (e.g. `laravel`, `pestphp`, `php`), then query specific symbol/behavior. Prefer when need:
+- Exact method signatures, return types, parameter names
 - Version-specific syntax (PHP 8.4 enums, readonly classes, Laravel 11 facades)
-- Framework conventions you cannot recall with confidence
-- Anything you would otherwise state from memory without verification
+- Framework conventions cannot recall with confidence
+- Anything would otherwise state from memory without verification
 
 ## Project Structure
 
@@ -38,15 +38,15 @@ output/
 
 ## Layered Architecture Conventions
 
-The five layers map to the `decompose-legacy` builder subagents. Each layer talks only to the one below it.
+Five layers map to `decompose-legacy` builder subagents. Each layer talks only to one below.
 
-- **Model** — Eloquent, namespace `App\Models`. Defines `$table`, `$fillable`, `$casts`, and relationship methods. No queries on relations here beyond definitions. Entity names are singular PascalCase (`Product`); tables are snake_case plural (`products`).
-- **DTO** — namespace `App\DTO\{Entity}`. Every DTO is a `readonly class` with constructor property promotion. Four shapes per entity: base (`{Entity}DTO`), `Create{Entity}DTO`, `Update{Entity}DTO` (all nullable), `{Entity}ResponseDTO`. Provide `fromModel()` factories and `toArray()` serializers.
-- **Repository** — namespace `App\Repositories`. An interface plus its Eloquent implementation. Eloquent queries live **here and nowhere else**. Constructor-inject the Model (readonly promoted). No business logic — pure data access.
-- **Service** — namespace `App\Services`. An interface plus its implementation. Constructor-inject the repository **interface** (readonly promoted). Accepts/returns DTOs, not models. Throws `ModelNotFoundException` when a lookup fails.
-- **Controller** — namespace `App\Controllers`. Constructor-inject the service **interface**. One method per endpoint: validate request → build DTO → call service → return `response()->json(...)`. No business or query logic.
+- **Model** — Eloquent, namespace `App\Models`. Defines `$table`, `$fillable`, `$casts`, relationship methods. No queries on relations here beyond definitions. Entity names singular PascalCase (`Product`); tables snake_case plural (`products`).
+- **DTO** — namespace `App\DTO\{Entity}`. Every DTO is `readonly class` with constructor property promotion. Four shapes per entity: base (`{Entity}DTO`), `Create{Entity}DTO`, `Update{Entity}DTO` (all nullable), `{Entity}ResponseDTO`. Provide `fromModel()` factories + `toArray()` serializers.
+- **Repository** — namespace `App\Repositories`. Interface + Eloquent implementation. Eloquent queries live **here and nowhere else**. Constructor-inject Model (readonly promoted). No business logic — pure data access.
+- **Service** — namespace `App\Services`. Interface + implementation. Constructor-inject repository **interface** (readonly promoted). Accepts/returns DTOs, not models. Throws `ModelNotFoundException` when lookup fails.
+- **Controller** — namespace `App\Controllers`. Constructor-inject service **interface**. One method per endpoint: validate request → build DTO → call service → return `response()->json(...)`. No business or query logic.
 
-Dependency direction: **Controller → Service (interface) → Repository (interface) → Model**. Always type-hint the interface, never the concrete class.
+Dependency direction: **Controller → Service (interface) → Repository (interface) → Model**. Always type-hint interface, never concrete class.
 
 ## Routing
 
@@ -68,7 +68,7 @@ Route::prefix('products')->group(function () {
 
 ## Database
 
-Use Eloquent and the query builder. **Parameterized queries only** — bind values, never interpolate:
+Use Eloquent + query builder. **Parameterized queries only** — bind values, never interpolate:
 
 ```php
 // Correct — bindings via Eloquent/query builder
@@ -83,11 +83,11 @@ $products = Product::query()
 $products = DB::select('SELECT * FROM products WHERE category_id = ?', [$categoryId]);
 ```
 
-The `legacy/` code interpolates values directly into SQL strings. That pattern is forbidden in `modern/` code.
+`legacy/` code interpolates values directly into SQL strings. That pattern forbidden in `modern/` code.
 
 ## Environment Configuration
 
-All config via environment variables (`.env`). Never hardcode credentials.
+All config via env vars (`.env`). Never hardcode credentials.
 
 | Variable | Required | Default |
 |---|---|---|
@@ -103,17 +103,17 @@ All config via environment variables (`.env`). Never hardcode credentials.
 
 ## Deployment
 
-- Deploy the API on **Render** (PHP via Dockerfile) — alternatively Laravel Forge/Vapor
+- Deploy API on **Render** (PHP via Dockerfile) — alternatively Laravel Forge/Vapor
 - Build command: `composer install --no-dev --optimize-autoloader`
 - Start command: `php artisan serve --host 0.0.0.0 --port $PORT` (or configure PHP-FPM + nginx)
-- Set environment variables in the hosting dashboard
+- Set env vars in hosting dashboard
 - Run migrations on deploy: `php artisan migrate --force`
 
 ## Security
 
 - Validate **all** request input via `$request->validate(...)` or form requests
 - Parameterized queries / Eloquent bindings only — never string-concatenated SQL (prevents injection)
-- Escape output when rendering HTML — use `htmlspecialchars()` (the legacy pages do this for display)
+- Escape output when rendering HTML — use `htmlspecialchars()` (legacy pages do this for display)
 - No secrets in code — everything via `.env`
-- CORS configured for the specific frontend URL only
+- CORS configured for specific frontend URL only
 - Type every signature (`declare(strict_types=1)` + param/return types) — surfaces bad input early

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The project uses **Pest** (a test framework built on PHPUnit) for both unit and integration tests. Pest is the default; PHPUnit-style assertions remain available since Pest runs on PHPUnit. Follow the Pest docs as the primary reference.
+Project use **Pest** (test framework on PHPUnit) for unit + integration tests. Pest default; PHPUnit assertions still work since Pest run on PHPUnit. Pest docs = primary reference.
 
 ## Test Organization
 
@@ -24,13 +24,13 @@ modern/
     phpunit.xml
 ```
 
-Tests live alongside the code they test as `*Test.php`. Move a file to `tests/Unit/` or `tests/Feature/` only when a single class accumulates many tests or the suite needs a real HTTP/database stack.
+Tests live with code they test as `*Test.php`. Move to `tests/Unit/` or `tests/Feature/` only when single class has many tests or suite need real HTTP/database stack.
 
 ## Unit Tests
 
 ### Dataset-Driven Tests (preferred)
 
-Most scenarios are clearest as data-driven tests using Pest datasets:
+Most scenarios clearest as data-driven tests with Pest datasets:
 
 ```php
 use App\DTO\Product\CreateProductDTO;
@@ -52,7 +52,7 @@ describe('createProduct validation', function () {
 
 ### Mocking
 
-Use Pest's `Mockery` integration (`Mockery::mock`, `app()->bind`) to substitute repository/service interfaces:
+Use Pest `Mockery` integration (`Mockery::mock`, `app()->bind`) to substitute repository/service interfaces:
 
 ```php
 use App\Repositories\ProductRepositoryInterface;
@@ -71,7 +71,7 @@ it('creates a product through the service', function () {
 
 ## Feature / HTTP Tests
 
-Controllers are tested through the HTTP layer with an in-memory database:
+Controllers tested through HTTP layer with in-memory database:
 
 ```php
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -114,7 +114,7 @@ composer test -- --filter='rejects a negative price'
 - Group related cases with `describe('scope')`
 
 ### Assertion Style
-Prefer Pest's expectation API; fall back to PHPUnit assertions when needed:
+Prefer Pest expectation API; fall back to PHPUnit assertions when needed:
 - `expect($value)->toBe($expected)`
 - `expect($value)->toEqual($expected)` (deep)
 - `expect($value)->toBeTruthy()`
@@ -125,7 +125,7 @@ Prefer Pest's expectation API; fall back to PHPUnit assertions when needed:
 
 ## Documentation & Syntax Lookup
 
-When you need exact Pest/PHPUnit API details, dataset syntax, or Laravel testing helpers, **use the Context7 MCP server** to fetch authoritative docs rather than guessing. Resolve the library first (e.g., `pestphp`, `laravel`, `phpunit`), then query the specific assertion or helper. Prefer it over training-data recall for any testing API you cannot state with confidence.
+When need exact Pest/PHPUnit API details, dataset syntax, or Laravel testing helpers, **use Context7 MCP server** to fetch authoritative docs rather than guess. Resolve library first (e.g., `pestphp`, `laravel`, `phpunit`), then query specific assertion or helper. Prefer over training-data recall for any testing API you cannot state with confidence.
 
 ## Coverage Targets
 
