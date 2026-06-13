@@ -1,0 +1,29 @@
+# Dependencies
+vendor/
+
+# Node tooling (extractor script is Node-based)
+node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Laravel runtime
+storage/logs/
+storage/framework/
+
+# PHPUnit / Pest cache
+.phpunit.result.cache
+
+# Generated spec bundles (decompose-legacy skill)
+output/
+
+# Project metadata (local overrides)
+project-metadata.local.md
